@@ -32,14 +32,13 @@ def backupCurrentYamlFile():
         os.rename('composeFile.yml', 'docker-backups/composeFile.yml.'+tstamp)
 
 # All variables (be it a CLI parameter or the default values) get inserted in the YAML file here.
-def injectVariables(cpulimit, cpureserve, memorylimit, memoryreserve, varnishstorage):
+def injectVariables(cpulimit, cpureserve, memorylimit, memoryreserve):
     original = open('composeFile.yml', 'rt')
     wholefile = original.read()
     wholefile = wholefile.replace('___CPUCAP___', str(cpulimit))
     wholefile = wholefile.replace('___CPURESERV___', str(cpureserve))
     wholefile = wholefile.replace('___MEMORYCAP___', str(memorylimit))
     wholefile = wholefile.replace('___MEMORYRESERVATION___', str(memoryreserve))
-    wholefile = wholefile.replace('___VARNISH___', str(varnishstorage))
     original.close()
 
     final = open('composeFile.yml', 'wt')
@@ -124,8 +123,10 @@ def main(args):
     else:
         memoryreserve = args.memres
 
+
+    backupCurrentYamlFile()
     writeNewYamlFile()
-    injectVariables(cpulimit, cpureserve, memorylimit, memoryreserve, varnishstorage)
+    injectVariables(cpulimit, cpureserve, memorylimit, memoryreserve)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
